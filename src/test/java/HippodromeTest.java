@@ -1,14 +1,22 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoSession;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class HippodromeTest {
@@ -27,30 +35,71 @@ class HippodromeTest {
 
     @Test
     public void createHippodromeWithNullHorsesList(){
-        Mockito.doReturn(null).when(horsesMockList).size();
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new Hippodrome(horsesMockList));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new Hippodrome(null));
 
         assertEquals("Horses cannot be null.", e.getMessage());
     }
 
     @Test
     public void createHippodromeWithEmptyHorsesList(){
-        Mockito.doReturn(horsesMockList.isEmpty()).when(horsesMockList).size();
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new Hippodrome(horsesMockList));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> new Hippodrome(Collections.EMPTY_LIST));
 
         assertEquals("Horses cannot be empty.", e.getMessage());
     }
 
 
     @Test
-    void getHorses() {
+    void checkHorserUnmodifiedAfterGetHorsesMethod() {
+        List<Horse> horsesMockList = IntStream.range(0, 30)
+                .mapToObj(i -> Mockito.mock(Horse.class))
+                .collect(Collectors.toList());
+
+
+        Hippodrome hippodrome = new Hippodrome(horsesMockList);
+
+        List<Horse> hippodromHorsesList = hippodrome.getHorses();
+        int i=0;
+
+        for(Horse horse: hippodromHorsesList){
+            Assertions.assertEquals(horse, horsesMockList.get(i));
+            i++;
+        }
     }
 
     @Test
-    void move() {
+    public void checkMoveCallByAllHorsesInList() {
+        List<Horse> horsesMockList = IntStream.range(0, 50)
+                .mapToObj(i -> Mockito.mock(Horse.class))
+                .collect(Collectors.toList());
+
+        Hippodrome hippodrome = new Hippodrome(horsesMockList);
+
+        hippodrome.move();
+
+        for(Horse horseMock : horsesMockList){
+            Mockito.verify(horseMock).move();
+        }
+
     }
 
     @Test
-    void getWinner() {
+    void getWinnerReturnHorseWithLongDistance() {
+        Horse horseMock1 = Mockito.mock(Horse.class);
+        Horse horseMock2 = Mockito.mock(Horse.class);
+        Horse horseMock3 = Mockito.mock(Horse.class);
+
+        Mockito.when(horseMock1.getDistance()).thenReturn(10.0);
+        Mockito.when(horseMock2.getDistance()).thenReturn(20.0);
+        Mockito.when(horseMock3.getDistance()).thenReturn(15.0);
+
+        List<Horse> horses = List.of(horseMock1, horseMock2, horseMock3);
+        Hippodrome hippodrome = new Hippodrome(horses);
+
+        Horse winner = hippodrome.getWinner();
+
+        assertSame(horseMock2, winner);
+        Mockito.verify(horseMock2, Mockito.atLeastOnce()).getDistance();
     }
+
+
 }
