@@ -11,10 +11,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class HorseTest {
+
+    @Test
+    public void checkCreateNewHorse_ShouldReturnNewHorseWithValidParams(){
+         String name = "Sprinter";
+         double speed = 5.2;
+         double distance = 5.2;
+         Horse horse = new Horse(name, speed, distance);
+
+         assertEquals(name, horse.getName());
+         assertEquals(speed, horse.getSpeed());
+         assertEquals(distance, horse.getDistance());
+    }
 
 
     @Test
