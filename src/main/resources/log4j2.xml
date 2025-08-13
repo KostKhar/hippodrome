@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="HippodromeApp">
+<Configuration status="warn" name="Hippodrome">
     <Appenders>
         <RollingFile name="RollingFile"
                      fileName="logs/hippodrome.log"
                      filePattern="logs/hippodrome.%d{dd-MM-yyyy}.log">
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
                 <pattern>%d{dd-MM-yyyy HH:mm:ss,SSS} %-5level %c{1}: %msg%n</pattern>
             </PatternLayout>
@@ -11,25 +12,22 @@
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
-            <DefaultRolloverStrategy max="30"/>
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="logs/" maxDepth="2">
+                    <IfFileName glob="*/hippodrome-*.log" />
+                    <IfLastModified age="7d" />
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
-        <DefaultRolloverStrategy>
-            <!-- Максимальное количество архивных файлов -->
-            <Delete basePath="logs/" maxDepth="2">
-                <IfFileName glob="*/hippodrome-*.log.gz" />
-                <IfLastModified age="7d" />
-            </Delete>
-        </DefaultRolloverStrategy>
     </Appenders>
 
     <Loggers>
-        <Root level="info">
+        <Logger name="com.example.hippodrome" level="debug" additivity="false">
+            <AppenderRef ref="RollingFile"/>
+        </Logger>
+
+        <Root level="debug">
             <AppenderRef ref="RollingFile"/>
         </Root>
-
-        <!-- Дополнительные логгеры для конкретных пакетов/классов -->
-        <Logger name="com.example.hippodrome" level="debug" additivity="true">
-            <AppenderRef ref="RollingFile" level="debug"/>
-        </Logger>
     </Loggers>
 </Configuration>
