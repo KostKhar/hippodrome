@@ -1,42 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
-<!--    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--    <RollingFile name="RollingFile" fileName="hippodrome.log1" filePattern="logs/${baseFileName}-%d{yyyy-MM-dd}.log.gz">-->
-<!--        <PatternLayout>-->
-<!--            <pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS} %-5level %c{1}: %m%n</pattern>-->
-<!--        </PatternLayout>-->
-<!--        <Policies>-->
-<!--            <TimeBasedTriggeringPolicy interval="1" modulate="true" />-->
-<!--        </Policies>-->
-<!--        <DefaultRolloverStrategy>-->
-<!--            <Delete basePath="logs/">-->
-<!--                <IfFileName glob="logs/${baseFileName}-*.log" />-->
-<!--                <IfLastModified age="7d" />-->
-<!--            </Delete>-->
-<!--        </DefaultRolloverStrategy>-->
-<!--    </RollingFile>-->
+<Configuration status="warn" name="HippodromeApp">
+    <Appenders>
+        <RollingFile name="RollingFile"
+                     fileName="logs/hippodrome.log"
+                     filePattern="logs/hippodrome.%d{dd-MM-yyyy}.log">
+            <PatternLayout>
+                <pattern>%d{dd-MM-yyyy HH:mm:ss,SSS} %-5level %c{1}: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+        <DefaultRolloverStrategy>
+            <!-- Максимальное количество архивных файлов -->
+            <Delete basePath="logs/" maxDepth="2">
+                <IfFileName glob="*/hippodrome-*.log.gz" />
+                <IfLastModified age="7d" />
+            </Delete>
+        </DefaultRolloverStrategy>
+    </Appenders>
 
-    <!-- Файловый логгер -->
-    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/hippodrome.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/hippodrome-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS} [%-5level] %c{1}: %msg%n</pattern>
-        </encoder>
-    </appender>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="RollingFile"/>
+        </Root>
 
-    <!-- Консольный логгер (опционально) -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss} [%-5level] %c{1}: %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <root level="INFO">
-        <appender-ref ref="RollingFile" />
-        <appender-ref ref="CONSOLE" />
-    </root>
+        <!-- Дополнительные логгеры для конкретных пакетов/классов -->
+        <Logger name="com.example.hippodrome" level="debug" additivity="true">
+            <AppenderRef ref="RollingFile" level="debug"/>
+        </Logger>
+    </Loggers>
 </Configuration>

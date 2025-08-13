@@ -18,7 +18,7 @@ public class Main {
                 new Horse("Zephyr", 2.6),
                 new Horse("Blaze", 2.7),
                 new Horse("Lobster", 2.8),
-                new Horse("Pegasus", 2.9),
+                new Horse("Pegasus", 3.0),
                 new Horse("Cherry", 3)
         );
         Hippodrome hippodrome = new Hippodrome(horses);
