@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+<!--    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--    <RollingFile name="RollingFile" fileName="hippodrome.log1" filePattern="logs/${baseFileName}-%d{yyyy-MM-dd}.log.gz">-->
+<!--        <PatternLayout>-->
+<!--            <pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS} %-5level %c{1}: %m%n</pattern>-->
+<!--        </PatternLayout>-->
+<!--        <Policies>-->
+<!--            <TimeBasedTriggeringPolicy interval="1" modulate="true" />-->
+<!--        </Policies>-->
+<!--        <DefaultRolloverStrategy>-->
+<!--            <Delete basePath="logs/">-->
+<!--                <IfFileName glob="logs/${baseFileName}-*.log" />-->
+<!--                <IfLastModified age="7d" />-->
+<!--            </Delete>-->
+<!--        </DefaultRolloverStrategy>-->
+<!--    </RollingFile>-->
+
+    <!-- Файловый логгер -->
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/hippodrome.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/hippodrome-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS} [%-5level] %c{1}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Консольный логгер (опционально) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%-5level] %c{1}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+</Configuration>
