@@ -186,6 +186,7 @@ class HorseTest {
             Horse horse = new Horse("Funtic", speed, distance);
 
             horse.move();
+            mockStatic.verify(() -> Horse.getRandomDouble(0.2, 0.9));
             double expectedDistance =  distance + speed * random;
 
             Assertions.assertEquals(expectedDistance,  horse.getDistance() ); ;
