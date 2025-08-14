@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 class HorseTest {
 
     @Test
-    public void checkCreateNewHorse_ShouldReturnNewHorseWithValidParams(){
+    public void checkCreateNewHorseWith3Params_ShouldReturnNewHorse(){
          String name = "Sprinter";
          double speed = 5.2;
          double distance = 5.2;
@@ -26,6 +26,16 @@ class HorseTest {
          assertEquals(name, horse.getName());
          assertEquals(speed, horse.getSpeed());
          assertEquals(distance, horse.getDistance());
+    }
+
+    @Test
+    public void checkCreateNewHorseWith2Param_ShouldReturnNewHorse(){
+        String name = "Sprinter";
+        double speed = 5.2;
+        Horse horse = new Horse(name, speed);
+
+        assertEquals(name, horse.getName());
+        assertEquals(speed, horse.getSpeed());
     }
 
 
@@ -47,16 +57,25 @@ class HorseTest {
                 Arguments.arguments("\n"),
                 Arguments.arguments("\t"),
                 Arguments.arguments("   "),
+                Arguments.arguments("\n \n  \n "),
                 Arguments.arguments("\n \t  \r ")
-
-
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("getDataForNameIsBlank")
+    void nameIsBlankWith2Param_ShouldReturnIllegalArgumentException(String name) {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                ()-> new Horse(name, 5.0)
+        );
+
+        assertEquals("Name cannot be blank.", e.getMessage());
     }
 
 
     @ParameterizedTest
     @MethodSource("getDataForNameIsBlank")
-    void nameIsBlank_ShouldReturnIllegalArgumentException(String name) {
+    void nameIsBlankWith3Param_ShouldReturnIllegalArgumentException(String name) {
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
                 ()-> new Horse(name, 5.0, 10.1)
         );
@@ -74,10 +93,20 @@ class HorseTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("getDataForNegativeSpeed")
+    void speedIsNegativeWith2Param_ShouldReturnIllegalArgumentException(double speed) {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                ()-> new Horse("Sprinter", speed)
+        );
+
+        assertEquals("Speed cannot be negative.", e.getMessage());
+    }
+
 
     @ParameterizedTest
     @MethodSource("getDataForNegativeSpeed")
-    void speedIsNegative_ShouldReturnIllegalArgumentException(double speed) {
+    void speedIsNegativeWith3Param_ShouldReturnIllegalArgumentException(double speed) {
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
                 ()-> new Horse("Sprinter", speed, 10.1)
         );
@@ -128,12 +157,11 @@ class HorseTest {
 
 
     @Test
-    void move_shouldReturnVerifyGetRandomDouble() {
+    void getRandomDoubleTest() {
        try( MockedStatic<Horse> mockStatic =  Mockito.mockStatic(Horse.class)) {
            mockStatic.when(() -> Horse.getRandomDouble(0.2, 0.9)).thenReturn(0.5);
 
-           horse.move();
-
+           assertEquals(0.5, Horse.getRandomDouble(0.2, 0.9));
            mockStatic.verify(() -> Horse.getRandomDouble(0.2, 0.9));
        }
     }

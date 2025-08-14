@@ -16,10 +16,10 @@ public class Hippodrome {
     public Hippodrome(List<Horse> horses) {
         if (isNull(horses)) {
             logger.error("Horses list is null");
-            throw new IllegalArgumentException("Horses cannot be null");
+            throw new IllegalArgumentException("Horses cannot be null.");
         } else if (horses.isEmpty()) {
             logger.error("Hippodrome: Horses cannot be empty.");
-            throw new IllegalArgumentException("Horses cannot be empty");
+            throw new IllegalArgumentException("Horses cannot be empty.");
         }
 
         this.horses = horses;
